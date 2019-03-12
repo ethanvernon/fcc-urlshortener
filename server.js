@@ -13,7 +13,7 @@ require('dotenv').config();
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: 'false'}));
 app.use(bodyParser.json());
-app.use('/public', express.static(process.cwd() + '/public'));
+app.use(express.static('public'));
 
 //serve static file at / and /index.html
 app.get('/', function(req, res){

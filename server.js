@@ -5,25 +5,25 @@ var mongo = require('mongodb');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var MongoClient = mongo.MongoClient;
-require('dotenv').config();
-var cors = require('cors');
 var app = express();
 var port = process.env.PORT;
+var cors = require('cors');
+require('dotenv').config();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: 'false'}));
 app.use(bodyParser.json());
 app.use('/public', express.static(process.cwd() + '/public'));
+
+//serve static file at / and /index.html
 app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-/** this project needs a db !! **/ 
-//mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, dbName:'test.people'});
-
 //use connect method to connect to MongoDb server
 MongoClient.connect(process.env.MONGO_URI, function(err, db) {
 	if (err) {
+		//if can't connect log error
 		console.log('unable to connect to database. Error: ' + err);
 	} else {
 		console.log('Connection established');
@@ -44,21 +44,19 @@ MongoClient.connect(process.env.MONGO_URI, function(err, db) {
 
 		var ShortUrl = mongoose.model('ShortUrl', urlSchema);
 
-
-
+		//post request from form in index.html
 		app.post('/api/shorturl/new', function(req,res) {
 
 			//get the url from the form
-			var newUrl=req.body.url;	
+			var newUrl=req.body.url;
 
-			//make the object
+			//make the object to store
 			var urlToShorten = new ShortUrl({
 				original_url: newUrl, 
 				short_url:1
 			});
 
-			//open the collection
-			//var collection=db.collection('links');
+			//open the collection from db atlas
 			var collection=db.db("FCC").collection("links");
 
 			//save the new object
@@ -68,8 +66,10 @@ MongoClient.connect(process.env.MONGO_URI, function(err, db) {
 				}
 			});
 
+			console.log(urlToShorten);
+
 			//show new object
-			return res.json({urlToShorten});
+			return res.send({original_url:urlToShorten.original_url, short_url:urlToShorten.short_url});
 			
 		});
 

@@ -8,7 +8,7 @@ var MongoClient = mongo.MongoClient;
 var app = express();
 var port = process.env.PORT;
 var cors = require('cors');
-require('dotenv').config();
+//require('dotenv').config();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: 'false'}));

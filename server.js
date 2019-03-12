@@ -29,19 +29,29 @@ app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-  
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-});
-
 //get info from post request
 app.post('/api/shorturl/new', function(req,res) {
 	var newUrl=req.body.url;
 	res.json({"test": newUrl});
-})
+});
 
+//make schema/model for a shortened url
+var Schema = mongoose.Schema;
 
+var urlSchema = new Schema({    
+	original_url: {
+		type:String,
+		unique:true
+		}
+	short_url: {
+		type:Number,
+		unique:true
+	}
+});
+
+var shortUrl = mongoose.model('shortUrl', urlSchema);
+
+//console for port
 app.listen(port, function () {
   console.log('Node.js listening ...');
 });

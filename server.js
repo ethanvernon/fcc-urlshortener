@@ -13,11 +13,16 @@ require('dotenv').config();
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: 'false'}));
 app.use(bodyParser.json());
-app.use('/public', express.static(process.cwd() + '/public'));
+//app.use('/public', express.static(process.cwd() + '/public'));
+app.use(express.static('public'));
 
-//serve static file at / and /index.html
+/*serve static file at / and /index.html
 app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
+});*/
+
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + '/views/index.html');
 });
 
 //use connect method to connect to MongoDb server

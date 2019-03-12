@@ -71,7 +71,7 @@ MongoClient.connect(process.env.MONGO_URI, function(err, db) {
 				} else {
 
 					//check the short_url count in the database
-					let documentCount= collection.find().count().then((data)=>{
+					var documentCount= collection.find().count().then((data)=>{
 
 						console.log(data);
 					
@@ -96,62 +96,6 @@ MongoClient.connect(process.env.MONGO_URI, function(err, db) {
 		});
 	}
 });
-
-
-
-
-
-
-
-
-
-
-
-
-/*make schema/model for a shortened url
-var Schema = mongoose.Schema;
-
-var urlSchema = new Schema({    
-	original_url: {
-		type:String,
-		unique:true
-		},
-	short_url: {
-		type:Number,
-		unique:true
-	}
-});
-
-var ShortUrl = mongoose.model('ShortUrl', urlSchema);*/
-
-
-/*get info from post request
-app.post('/api/shorturl/new', function(req,res) {
-	//get the url from the form
-	var newUrl=req.body.url;	
-
-	//make the object
-	var urlToShorten = new ShortUrl({
-		original_url: newUrl, 
-		short_url:1
-	});
-
-	//open the collection
-	var collection=db.collection('links');
-
-	//save the new object
-	collection.insert(urlToShorten, err => {
-		if (err) {
-			return res.send("error to databse: " + err);
-		}
-	});
-
-	//show new object
-	return res.json({urlToShorten});
-	
-});*/
-
-
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT || port, function () {

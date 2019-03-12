@@ -37,7 +37,8 @@ app.get("/api/hello", function (req, res) {
 
 //get info from post request
 app.post('/api/shorturl/new', function(req,res) {
-	res.json({"test": 'test'});
+	var newUrl=req.body.url;
+	res.json({"test": newUrl});
 })
 
 

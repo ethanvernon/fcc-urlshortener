@@ -17,7 +17,7 @@ app.use('/public', express.static(process.cwd() + '/public'));
 
 //serve static file at / and /index.html
 app.get('/', function(req, res){
-  res.sendFile(process.cwd() + '/views/index.html');
+  res.sendFile(__dirname + '/views/index.html');
 });
 
 //use connect method to connect to MongoDb server

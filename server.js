@@ -13,11 +13,11 @@ require('dotenv').config();
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: 'false'}));
 app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use('/public', express.static(process.cwd() + '/public'));
 
 //serve static file at / and /index.html
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/views/index.html');
+  res.sendFile(process.cwd() + '/views/index.html');
 });
 
 //use connect method to connect to MongoDb server
@@ -71,7 +71,7 @@ MongoClient.connect(process.env.MONGO_URI, function(err, db) {
 				} else {
 
 					//check the short_url count in the database
-					var documentCount= collection.find().count().then((data)=>{
+					let documentCount= collection.find().count().then((data)=>{
 
 						console.log(data);
 					
@@ -97,7 +97,8 @@ MongoClient.connect(process.env.MONGO_URI, function(err, db) {
 	}
 });
 
+
 // listen for requests :)
-var listener = app.listen(process.env.PORT || port, function () {
+var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });

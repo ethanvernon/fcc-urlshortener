@@ -76,7 +76,7 @@ MongoClient.connect(process.env.MONGO_URI, function(err, db) {
 				} else {
 
 					//check the short_url count in the database
-					let documentCount= collection.find().count().then((data)=>{
+					var documentCount= collection.find().count().then((data)=>{
 
 						console.log(data);
 					

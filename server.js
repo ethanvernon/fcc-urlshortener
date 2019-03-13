@@ -25,6 +25,45 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+
+/** 9)  Get input from client - Route parameters */
+app.get('/:shortened', function(req, res, next) {
+	//res.send({'echo': req.params.shortened});
+	//next();
+	//use connect method to connect to MongoDb server
+	MongoClient.connect(process.env.MONGO_URI, function(err, db) {
+		if (err) {
+			//if can't connect log error
+			console.log('unable to connect to database. Error: ' + err);
+			throw err;
+		} else {
+			//for debugging purposes
+			console.log('Connection established from a '+req.params.shortened);			
+
+			//check if the shortened url exists in database
+			//open the collection from db atlas
+			var collection=db.db("FCC").collection("links");
+
+			//check the database for the shortened url
+			var findOneByFood = collection.findOne({short_url:parseInt(req.params.shortened)})
+			.then(function (data) {
+				if(!data) {
+					console.log('got an error: ' + data);
+					return null;
+				} else {
+					console.log('got some data: ' + JSON.stringify(data));
+					res.redirect(data.original_url);
+				}
+			});
+
+
+			//if it is, then redirect to the page
+
+			//if it doesn't, then give some sort of error message
+		}
+	});
+});
+
 //use connect method to connect to MongoDb server
 MongoClient.connect(process.env.MONGO_URI, function(err, db) {
 	if (err) {

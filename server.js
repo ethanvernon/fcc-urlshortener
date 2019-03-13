@@ -8,12 +8,12 @@ var MongoClient = mongo.MongoClient;
 var app = express();
 var port = process.env.PORT;
 var cors = require('cors');
-//require('dotenv').config();
+require('dotenv').config();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: 'false'}));
 app.use(bodyParser.json());
-//app.use('/public', express.static(process.cwd() + '/public'));
+app.use('/public', express.static(process.cwd() + '/public'));
 app.use(express.static('public'));
 
 /*serve static file at / and /index.html
@@ -60,44 +60,49 @@ MongoClient.connect(process.env.MONGO_URI, function(err, db) {
 			var collection=db.db("FCC").collection("links");
 
 			//check if the url is in the right format
+			var urlRegex = /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 
-
-			//check if the url is in the database already
-			var findExistingEntry = collection.findOne(
-			    { original_url: newUrl },
-			    { original_url: 1, short_url: 1}
-			).then(function(data) {
-				//return the shortened URL if already in collection
-				if (data) {
-					console.log('already here');
-					console.log(data);
-					console.log(data.short_url);
-					return res.send({original_url: data.original_url, short_url: data.short_url});
-				} else {
-
-					//check the short_url count in the database
-					var documentCount= collection.find().count().then((data)=>{
-
+			if (!urlRegex.test(newUrl)) {
+				//send error message if invalid string
+				res.send({error: "invalid URL"});
+			} else {
+				//check if the url is in the database already
+				var findExistingEntry = collection.findOne(
+				    { original_url: newUrl },
+				    { original_url: 1, short_url: 1}
+				).then(function(data) {
+					//return the shortened URL if already in collection
+					if (data) {
+						console.log('already here');
 						console.log(data);
-					
-						//make the object to store
-						var urlToShorten = new ShortUrl({
-							original_url: newUrl, 
-							short_url:data+1
-						});
+						console.log(data.short_url);
+						return res.send({original_url: data.original_url, short_url: data.short_url});
+					} else {
 
-						//save the new object
-						collection.save(urlToShorten, err => {
-							if (err) {
-								console.log("error to databse: " + err);
-							}
-						});
+						//check the short_url count in the database
+						var documentCount= collection.find().count().then((data)=>{
 
-						//show new object in browser
-						return res.send({original_url:urlToShorten.original_url, short_url:urlToShorten.short_url});
-					});
-				}
-			});
+							console.log(data);
+						
+							//make the object to store
+							var urlToShorten = new ShortUrl({
+								original_url: newUrl, 
+								short_url:data+1
+							});
+
+							//save the new object
+							collection.save(urlToShorten, err => {
+								if (err) {
+									console.log("error to databse: " + err);
+								}
+							});
+
+							//show new object in browser
+							return res.send({original_url:urlToShorten.original_url, short_url:urlToShorten.short_url});
+						});
+					}
+				});
+			}
 		});
 	}
 });

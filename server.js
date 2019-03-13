@@ -99,7 +99,7 @@ MongoClient.connect(process.env.MONGO_URI, function(err, db) {
 			var collection=db.db("FCC").collection("links");
 
 			//check if the url is in the right format
-			var urlRegex = /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+			var urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)/;
 
 			if (!urlRegex.test(newUrl)) {
 				//send error message if invalid string
